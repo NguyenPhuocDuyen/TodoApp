@@ -1,0 +1,16 @@
+﻿@page "/todoTask"
+
+<hi>task líst</hi>
+@if (Tasks is null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    foreach (var item in Tasks)
+    {
+        <div>
+            <p>@item.Name</p>
+        </div>
+    }
+}
