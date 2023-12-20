@@ -1,0 +1,33 @@
+﻿@page "/TaskDetail/{TaskId}"
+@using TodoApp.Client.Components
+
+@if (Task is null)
+{
+    <Loading></Loading>
+}
+else
+{
+    <h3>Task: @Task.Name</h3>
+    <table>
+        <tr>
+            <td>Name</td>
+            <td>@Task.Name</td>
+        </tr>
+        <tr>
+            <td>Assignee</td>
+            <td>@Task.AssigneeName</td>
+        </tr>
+        <tr>
+            <td>Priority</td>
+            <td>@Task.Priority</td>
+        </tr>
+        <tr>
+            <td>CreateAt</td>
+            <td>@Task.CreatedAt</td>
+        </tr>
+        <tr>
+            <td>Status</td>
+            <td>@Task.Status</td>
+        </tr>
+    </table>
+}

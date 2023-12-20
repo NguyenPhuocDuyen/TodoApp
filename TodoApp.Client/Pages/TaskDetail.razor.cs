@@ -4,15 +4,18 @@ using TodoApp.Models.Dtos;
 
 namespace TodoApp.Client.Pages
 {
-    public partial class TodoTask
+    public partial class TaskDetail
     {
+        [Parameter]
+        public string TaskId { get; set; }
+
         [Inject] private ITaskApiClient TaskApiClient { get; set; }
 
-        private List<TaskDto> Tasks;
+        private TaskDto? Task;
 
         protected override async Task OnInitializedAsync()
         {
-            Tasks = await TaskApiClient.GetAllTasks();
+            Task = await TaskApiClient.GetById(TaskId);
         }
     }
 }

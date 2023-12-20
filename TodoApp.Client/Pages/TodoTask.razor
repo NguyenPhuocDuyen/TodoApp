@@ -1,16 +1,50 @@
 ﻿@page "/todoTask"
+@using TodoApp.Client.Components
+@using Microsoft.AspNetCore.Components;
+@using TodoApp.Client.Services;
+@using TodoApp.Models.Dtos;
 
-<hi>task líst</hi>
+<h1>Todo Task</h1>
 @if (Tasks is null)
 {
-    <p>Loading...</p>
+    <Loading></Loading>
 }
 else
 {
-    foreach (var item in Tasks)
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Priority</th>
+                <th>Assignee</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Tasks)
+            {
+                <tr>
+                    <td>@item.Name</td>
+                    <td>@item.Priority</td>
+                    <td>@item.AssigneeName</td>
+                    <td>@item.CreatedAt.ToString("dd/MM/yyyy")</td>
+                    <td>@item.Status</td>
+                    <td><a class="btn btn-primary" href="/TaskDetail/@item.Id">Detail</a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    [Inject] private ITaskApiClient TaskApiClient { get; set; }
+
+    private List<TaskDto> Tasks;
+
+    protected override async Task OnInitializedAsync()
     {
-        <div>
-            <p>@item.Name</p>
-        </div>
+        Tasks = await TaskApiClient.GetAllTasks();
     }
 }

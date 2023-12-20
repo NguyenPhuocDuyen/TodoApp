@@ -12,10 +12,31 @@ namespace TodoApp.Client.Services
             _httpClient = httpClient;
         }
 
-        public Task<List<TaskDto>> GetAllTasks()
+        public Task Create(TaskCreateRequest task)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task Delete(string task)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<TaskDto>?> GetAllTasks()
         {
             var result = _httpClient.GetFromJsonAsync<List<TaskDto>>("/api/Task");
             return result;
+        }
+
+        public Task<TaskDto?> GetById(string id)
+        {
+            var result = _httpClient.GetFromJsonAsync<TaskDto>($"/api/Task/{id}");
+            return result;
+        }
+
+        public Task Update(TaskUpdateRequest task)
+        {
+            throw new NotImplementedException();
         }
     }
 }

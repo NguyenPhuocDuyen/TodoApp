@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TodoApp.Client", "TodoApp.C
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TodoApp.Server", "TodoApp.Server\TodoApp.Server.csproj", "{C9627647-EEF9-46EF-9BB1-08C1EF80FE7A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TodoApp.Models", "TodoApp.Models\TodoApp.Models.csproj", "{1060AB6E-3EAE-4503-900C-A01E0D8D7794}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TodoApp.Models", "TodoApp.Models\TodoApp.Models.csproj", "{1060AB6E-3EAE-4503-900C-A01E0D8D7794}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
