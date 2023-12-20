@@ -1,0 +1,72 @@
+﻿@page "/TaskList"
+@using TodoApp.Client.Components
+@using static TodoApp.Models.SD;
+
+<h1>Todo Task</h1>
+@if (Tasks is null || Assignees is null)
+{
+    <Loading></Loading>
+}
+else
+{
+    <div class="row">
+        <EditForm Model="@TaskListSearch" OnSubmit="SearchForm">
+            <div class="row">
+                <div class="col">
+                    <label>Name</label>
+                    <InputText class="form-control" @bind-Value="TaskListSearch.Name"></InputText>
+                </div>
+                <div class="col">
+                    <label>Assignee</label>
+                    <InputSelect class="form-control" @bind-Value="TaskListSearch.AssigneeId">
+                        <option value="">Select assignee</option>
+                        @foreach (var user in Assignees)
+                        {
+                            <option value="@user.Id">@user.FullName</option>
+                        }
+                    </InputSelect>
+                </div>
+                <div class="col">
+                    <label>Name</label>
+                    <InputSelect class="form-control" @bind-Value="TaskListSearch.Priority">
+                        <option value="">Select priority</option>
+                        @foreach (string item in Enum.GetNames(typeof(Priority)))
+                        {
+                            <option value="@item">@item</option>
+                        }
+                    </InputSelect>
+                </div>
+                <div class="col pt-4">
+                    <button class="btn btn-success" type="submit">Search</button>
+                </div>
+            </div>
+        </EditForm>
+    </div>
+    <div class="row mt-4">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Priority</th>
+                    <th>Assignee</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Tasks)
+                {
+                    <tr>
+                        <td>@item.Name</td>
+                        <td>@item.Priority</td>
+                        <td>@item.AssigneeName</td>
+                        <td>@item.CreatedAt.ToString("dd/MM/yyyy")</td>
+                        <td>@item.Status</td>
+                        <td><a class="btn btn-primary" href="/TaskDetail/@item.Id">Detail</a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

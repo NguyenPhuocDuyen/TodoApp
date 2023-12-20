@@ -1,5 +1,8 @@
 ﻿@page "/TaskDetail/{TaskId}"
 @using TodoApp.Client.Components
+@using Microsoft.AspNetCore.Components;
+@using TodoApp.Client.Services;
+@using TodoApp.Models.Dtos;
 
 @if (Task is null)
 {
@@ -30,4 +33,18 @@ else
             <td>@Task.Status</td>
         </tr>
     </table>
+}
+
+@code {
+    [Parameter]
+    public string TaskId { get; set; }
+
+    [Inject] private ITaskApiClient TaskApiClient { get; set; }
+
+    private TaskDto? Task;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Task = await TaskApiClient.GetById(TaskId);
+    }
 }

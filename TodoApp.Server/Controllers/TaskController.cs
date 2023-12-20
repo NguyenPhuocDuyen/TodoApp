@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using TodoApp.Models;
 using TodoApp.Models.Dtos;
 using TodoApp.Server.Repositories;
 
@@ -20,8 +21,8 @@ namespace TodoApp.Server.Controllers
 
         // GET: api/<TaskController>
         [HttpGet]
-        public async Task<IActionResult> Get()
-            => Ok(_mapper.Map<List<TaskDto>>(await _taskRepository.GetAllTasks()));
+        public async Task<IActionResult> Get([FromQuery] TaskListSearch taskListSearch)
+            => Ok(_mapper.Map<List<TaskDto>>(await _taskRepository.GetAllTasks(taskListSearch)));
 
         // GET api/<TaskController>/5
         [HttpGet("{id}")]

@@ -30,8 +30,22 @@ namespace TodoApp.Server.Repositories
             await _dbContext.SaveChangesAsync();
         }
         
-        public async Task<IEnumerable<Models.Task>> GetAllTasks()
-            => await _dbContext.Tasks.Include(x => x.Assignee).ToListAsync();
+        public async Task<IEnumerable<Models.Task>> GetAllTasks(Models.TaskListSearch taskListSearch)
+        {
+
+            var query = _dbContext.Tasks.Include(x => x.Assignee).AsQueryable();
+
+            if (!string.IsNullOrEmpty(taskListSearch.Name))
+                query = query.Where(x => x.Name.Contains(taskListSearch.Name));
+
+            if (taskListSearch.AssigneeId.HasValue)
+                query = query.Where(x => x.AssigneeId == taskListSearch.AssigneeId.Value);
+
+            if (taskListSearch.Priority.HasValue)
+                query = query.Where(x => x.Priority == taskListSearch.Priority.Value);
+
+            return await query.ToListAsync();
+        }
 
         public async Task<Models.Task?> GetById(Guid id)
             => await _dbContext.Tasks.Include(x => x.Assignee).FirstAsync(x => x.Id == id);

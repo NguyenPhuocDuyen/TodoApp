@@ -10,5 +10,6 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 builder.Services.AddTransient(sp => new HttpClient { BaseAddress = new Uri("https://localhost:7021") });
 
 builder.Services.AddScoped<ITaskApiClient, TaskApiClient>();
+builder.Services.AddScoped<IUserApiClient, UserApiClient>();
 
 await builder.Build().RunAsync();

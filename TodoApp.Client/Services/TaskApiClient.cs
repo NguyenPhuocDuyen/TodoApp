@@ -22,9 +22,10 @@ namespace TodoApp.Client.Services
             throw new NotImplementedException();
         }
 
-        public Task<List<TaskDto>?> GetAllTasks()
+        public Task<List<TaskDto>?> GetAllTasks(Models.TaskListSearch taskListSearch)
         {
-            var result = _httpClient.GetFromJsonAsync<List<TaskDto>>("/api/Task");
+            var url = $"/api/Task?name={taskListSearch.Name}&assigneeId={taskListSearch.AssigneeId}&priority={taskListSearch.Priority}";
+            var result = _httpClient.GetFromJsonAsync<List<TaskDto>>(url);
             return result;
         }
 
