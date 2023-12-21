@@ -1,11 +1,12 @@
 ﻿@page "/TaskList"
 @using TodoApp.Client.Components
 @using static TodoApp.Models.SD;
+@inject IConfiguration Configuration
 
 <h1>Todo Task</h1>
 @if (Tasks is null || Assignees is null)
 {
-    <Loading></Loading>
+    <Loading />
 }
 else
 {
@@ -65,9 +66,12 @@ else
                         <td>@item.Name</td>
                         <td>@item.Priority</td>
                         <td>@item.AssigneeName</td>
-                        <td>@item.CreatedAt.ToString("dd/MM/yyyy")</td>
+                        <td>@item.CreatedAt.ToString(Configuration["DateTimeFormat"])</td>
                         <td>@item.Status</td>
-                        <td><a class="btn btn-primary" href="/TaskDetail/@item.Id">Detail</a></td>
+                        <td>
+                            <a class="btn btn-primary" href="/TaskDetail/@item.Id">Detail</a>
+                            <a class="btn btn-success" href="/TaskUpdate/@item.Id">Update</a>
+                        </td>
                     </tr>
                 }
             </tbody>

@@ -14,7 +14,5 @@ namespace TodoApp.Models.Dtos
         public string Name { get; set; }
 
         public Priority Priority { get; set; }
-
-        public Status Status { get; set; }
     }
 }

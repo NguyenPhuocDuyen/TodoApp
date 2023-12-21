@@ -53,7 +53,7 @@ namespace TodoApp.Server.Controllers
 
         // PUT api/<TaskController>/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(Guid id, [FromBody] Models.Task newTask)
+        public async Task<IActionResult> Put(Guid id, [FromBody] TaskUpdateRequest newTask)
         {
             if (id != newTask.Id)
             {
@@ -65,7 +65,9 @@ namespace TodoApp.Server.Controllers
             {
                 return NotFound($"Not found task id: {id}");
             }
-            await _taskRepository.Update(newTask);
+            task.Name = newTask.Name;
+            task.Priority = newTask.Priority;
+            await _taskRepository.Update(task);
             return NoContent();
         }
 

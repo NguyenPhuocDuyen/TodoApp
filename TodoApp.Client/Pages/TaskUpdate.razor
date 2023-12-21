@@ -1,0 +1,71 @@
+﻿@page "/TaskUpdate/{TaskId}"
+@using static TodoApp.Models.SD
+@using TodoApp.Models.Dtos
+@using TodoApp.Client.Services
+@using TodoApp.Client.Components
+@using Microsoft.AspNetCore.Components;
+
+@inject IToastService ToastService
+@inject NavigationManager NavigationManager
+
+<PageTitle>Task Update</PageTitle>
+
+@if (Task is null)
+{
+    <Loading />
+}
+else
+{
+    <h3>Task Update: @Task.Name</h3>
+    <EditForm Model="Task" OnSubmit="UpdateForm">
+        <DataAnnotationsValidator />
+        <div class="form-group">
+            <label for="Name">Task Name</label>
+            <InputText class="form-control" @bind-Value="Task.Name"></InputText>
+            <ValidationMessage For="()=>Task.Name"></ValidationMessage>
+        </div>
+        <div class="form-group">
+            <label>Priority</label>
+            <InputSelect class="form-control" @bind-Value="Task.Priority">
+                <option value="">Select priority</option>
+                @foreach (string item in Enum.GetNames(typeof(Priority)))
+                {
+                    <option value="@item">@item</option>
+                }
+            </InputSelect>
+        </div>
+        <button type="submit" class="btn btn-primary mt-4">Submit</button>
+    </EditForm>
+}
+
+@code {
+    [Parameter]
+    public string TaskId { get; set; }
+
+    private TaskUpdateRequest Task;
+
+    [Inject] private ITaskApiClient TaskApiClient { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var taskDto = await TaskApiClient.GetById(TaskId);
+        Task = new TaskUpdateRequest();
+        Task.Id = taskDto.Id;
+        Task.Name = taskDto.Name;
+        Task.Priority = taskDto.Priority;
+    }
+
+    private async Task UpdateForm(EditContext editContext)
+    {
+        var result = await TaskApiClient.Update(Guid.Parse(TaskId), Task);
+        if (result)
+        {
+            ToastService.ShowSuccess($"Update task {Task.Name} successfully");
+            NavigationManager.NavigateTo("/TaskList");
+        }
+        else
+        {
+            ToastService.ShowError($"Update task error");
+        }
+    }
+}

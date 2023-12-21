@@ -36,9 +36,10 @@ namespace TodoApp.Client.Services
             return result;
         }
 
-        public Task<bool> Update(TaskUpdateRequest task)
+        public async Task<bool> Update(Guid id, TaskUpdateRequest task)
         {
-            throw new NotImplementedException();
+            var result = await _httpClient.PutAsJsonAsync($"/api/Task/{id}", task);
+            return result.IsSuccessStatusCode;
         }
     }
 }
