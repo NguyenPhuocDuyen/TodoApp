@@ -1,0 +1,19 @@
+﻿@using static Models.SD
+
+@switch (Priority)
+{
+    case Priority.Low:
+        <span class="badge badge-secondary">@nameof(Priority.Low)</span>
+        break;
+    case Priority.Medium:
+        <span class="badge badge-primary">@nameof(Priority.Medium)</span>
+        break;
+    case Priority.High:
+        <span class="badge badge-danger">@nameof(Priority.High)</span>
+        break;
+}
+
+@code {
+    [Parameter]
+    public Priority Priority { get; set; }
+}

@@ -13,7 +13,7 @@ else
         <EditForm Model="@TaskListSearch" OnSubmit="SearchForm">
             <div class="row">
                 <div class="col">
-                    <label>Name</label>
+                    <label>Task Name</label>
                     <InputText class="form-control" @bind-Value="TaskListSearch.Name"></InputText>
                 </div>
                 <div class="col">
@@ -27,7 +27,7 @@ else
                     </InputSelect>
                 </div>
                 <div class="col">
-                    <label>Name</label>
+                    <label>Priority</label>
                     <InputSelect class="form-control" @bind-Value="TaskListSearch.Priority">
                         <option value="">Select priority</option>
                         @foreach (string item in Enum.GetNames(typeof(Priority)))
@@ -39,6 +39,10 @@ else
                 <div class="col pt-4">
                     <button class="btn btn-success" type="submit">Search</button>
                 </div>
+                <div class="col pt-4">
+                    <a class="btn btn-primary" href="TaskCreate">Create</a>
+                </div>
+
             </div>
         </EditForm>
     </div>

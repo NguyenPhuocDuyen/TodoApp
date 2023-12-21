@@ -29,7 +29,7 @@ namespace TodoApp.Server.Repositories
             _dbContext.Update(task);
             await _dbContext.SaveChangesAsync();
         }
-        
+
         public async Task<IEnumerable<Models.Task>> GetAllTasks(Models.TaskListSearch taskListSearch)
         {
 
@@ -44,7 +44,7 @@ namespace TodoApp.Server.Repositories
             if (taskListSearch.Priority.HasValue)
                 query = query.Where(x => x.Priority == taskListSearch.Priority.Value);
 
-            return await query.ToListAsync();
+            return await query.OrderByDescending(x => x.CreatedAt).ToListAsync();
         }
 
         public async Task<Models.Task?> GetById(Guid id)

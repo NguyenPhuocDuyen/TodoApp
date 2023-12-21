@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TodoApp.Models
 {
-    public class SD
+    public static class SD
     {
         public enum Priority
         {

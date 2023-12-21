@@ -6,9 +6,9 @@ namespace TodoApp.Client.Services
     {
         Task<List<TaskDto>?> GetAllTasks(Models.TaskListSearch taskListSearch);
         Task<TaskDto?> GetById(string id);
-        Task Create(TaskCreateRequest task);
-        Task Update(TaskUpdateRequest task);
-        Task Delete(string task);
+        Task<bool> Create(TaskCreateRequest task);
+        Task<bool> Update(TaskUpdateRequest task);
+        Task<bool> Delete(string task);
 
     }
 }

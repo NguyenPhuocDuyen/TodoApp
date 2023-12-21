@@ -1,0 +1,50 @@
+﻿@page "/TaskCreate"
+@using static TodoApp.Models.SD
+@using TodoApp.Models.Dtos
+@using TodoApp.Client.Services
+
+@inject IToastService ToastService
+@inject NavigationManager NavigationManager
+
+<PageTitle>Task Create</PageTitle>
+
+<h3>Task Create</h3>
+
+<EditForm Model="Task" OnSubmit="CreateForm">
+    <DataAnnotationsValidator />
+    <div class="form-group">
+        <label for="Name">Task Name</label>
+        <InputText class="form-control" @bind-Value="Task.Name"></InputText>
+        <ValidationMessage For="()=>Task.Name"></ValidationMessage>
+    </div>
+    <div class="form-group">
+        <label>Priority</label>
+        <InputSelect class="form-control" @bind-Value="Task.Priority">
+            <option value="">Select priority</option>
+            @foreach (string item in Enum.GetNames(typeof(Priority)))
+            {
+                <option value="@item">@item</option>
+            }
+        </InputSelect>
+    </div>
+    <button type="submit" class="btn btn-primary mt-4">Submit</button>
+</EditForm>
+
+@code {
+    [Inject] private ITaskApiClient TaskApiClient { get; set; }
+    private TaskCreateRequest Task = new();
+
+    private async Task CreateForm(EditContext editContext)
+    {
+        var result = await TaskApiClient.Create(Task);
+        if (result)
+        {
+            ToastService.ShowSuccess($"Create task {Task.Name} successfully");
+            NavigationManager.NavigateTo("/TaskList");
+        }
+        else
+        {
+            ToastService.ShowError($"Create task error");
+        }
+    }
+}

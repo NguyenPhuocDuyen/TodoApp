@@ -12,12 +12,13 @@ namespace TodoApp.Client.Services
             _httpClient = httpClient;
         }
 
-        public Task Create(TaskCreateRequest task)
+        public async Task<bool> Create(TaskCreateRequest task)
         {
-            throw new NotImplementedException();
+            var result = await _httpClient.PostAsJsonAsync("/api/Task", task);
+            return result.IsSuccessStatusCode;
         }
 
-        public Task Delete(string task)
+        public Task<bool> Delete(string task)
         {
             throw new NotImplementedException();
         }
@@ -35,7 +36,7 @@ namespace TodoApp.Client.Services
             return result;
         }
 
-        public Task Update(TaskUpdateRequest task)
+        public Task<bool> Update(TaskUpdateRequest task)
         {
             throw new NotImplementedException();
         }
