@@ -8,7 +8,7 @@ namespace TodoApp.Client.Services
         Task<TaskDto?> GetById(string id);
         Task<bool> Create(TaskCreateRequest task);
         Task<bool> Update(Guid id, TaskUpdateRequest task);
-        Task<bool> Delete(string task);
+        Task<bool> Delete(Guid id);
 
     }
 }

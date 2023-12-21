@@ -18,9 +18,10 @@ namespace TodoApp.Client.Services
             return result.IsSuccessStatusCode;
         }
 
-        public Task<bool> Delete(string task)
+        public async Task<bool> Delete(Guid id)
         {
-            throw new NotImplementedException();
+            var result = await _httpClient.DeleteAsync($"/api/Task/{id}");
+            return result.IsSuccessStatusCode;
         }
 
         public Task<List<TaskDto>?> GetAllTasks(Models.TaskListSearch taskListSearch)

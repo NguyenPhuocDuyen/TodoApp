@@ -37,10 +37,16 @@ else
                         <td>
                             <a class="btn btn-primary" href="/TaskDetail/@item.Id">Detail</a>
                             <a class="btn btn-success" href="/TaskUpdate/@item.Id">Update</a>
+                            <button class="btn btn-danger" @onclick="()=>OnDeleteTask(item.Id)">Delete</button>
                         </td>
                     </tr>
                 }
             </tbody>
         </table>
     </div>
+    <Confirmation 
+        ConfirmationTitle="@($"Delete task")" 
+        ConfirmationMessage="@($"Are you sure to delete")" 
+        @ref="Confirmation"
+        ConfirmationChanged="OnConfirmDeleteTask" />
 }
