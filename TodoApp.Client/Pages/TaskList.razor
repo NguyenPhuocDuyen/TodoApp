@@ -4,48 +4,14 @@
 @inject IConfiguration Configuration
 
 <h1>Todo Task</h1>
-@if (Tasks is null || Assignees is null)
+@if (Tasks is null)
 {
     <Loading />
 }
 else
 {
     <div class="row">
-        <EditForm Model="@TaskListSearch" OnSubmit="SearchForm">
-            <div class="row">
-                <div class="col">
-                    <label>Task Name</label>
-                    <InputText class="form-control" @bind-Value="TaskListSearch.Name"></InputText>
-                </div>
-                <div class="col">
-                    <label>Assignee</label>
-                    <InputSelect class="form-control" @bind-Value="TaskListSearch.AssigneeId">
-                        <option value="">Select assignee</option>
-                        @foreach (var user in Assignees)
-                        {
-                            <option value="@user.Id">@user.FullName</option>
-                        }
-                    </InputSelect>
-                </div>
-                <div class="col">
-                    <label>Priority</label>
-                    <InputSelect class="form-control" @bind-Value="TaskListSearch.Priority">
-                        <option value="">Select priority</option>
-                        @foreach (string item in Enum.GetNames(typeof(Priority)))
-                        {
-                            <option value="@item">@item</option>
-                        }
-                    </InputSelect>
-                </div>
-                <div class="col pt-4">
-                    <button class="btn btn-success" type="submit">Search</button>
-                </div>
-                <div class="col pt-4">
-                    <a class="btn btn-primary" href="TaskCreate">Create</a>
-                </div>
-
-            </div>
-        </EditForm>
+        <TaskSearch OnSearch="TaskSearch" />
     </div>
     <div class="row mt-4">
         <table class="table table-bordered">

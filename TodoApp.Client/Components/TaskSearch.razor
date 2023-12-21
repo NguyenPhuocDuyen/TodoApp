@@ -1,0 +1,67 @@
+﻿@using static TodoApp.Models.SD
+@using TodoApp.Models.Dtos
+@using Blazored.Toast.Services
+@using TodoApp.Client.Services
+
+@if(Assignees is null)
+{
+    <Loading/>
+}
+else
+{
+    <EditForm Model="@TaskListSearch" OnSubmit="SearchForm">
+        <div class="row">
+            <div class="col">
+                <label>Task Name</label>
+                <InputText class="form-control" @bind-Value="TaskListSearch.Name"></InputText>
+            </div>
+            <div class="col">
+                <label>Assignee</label>
+                <InputSelect class="form-control" @bind-Value="TaskListSearch.AssigneeId">
+                    <option value="">Select assignee</option>
+                    @foreach (var user in Assignees)
+                    {
+                        <option value="@user.Id">@user.FullName</option>
+                    }
+                </InputSelect>
+            </div>
+            <div class="col">
+                <label>Priority</label>
+                <InputSelect class="form-control" @bind-Value="TaskListSearch.Priority">
+                    <option value="">Select priority</option>
+                    @foreach (string item in Enum.GetNames(typeof(Priority)))
+                    {
+                        <option value="@item">@item</option>
+                    }
+                </InputSelect>
+            </div>
+            <div class="col pt-4">
+                <button class="btn btn-success" type="submit">Search</button>
+            </div>
+            <div class="col pt-4">
+                <a class="btn btn-primary" href="TaskCreate">Create</a>
+            </div>
+
+        </div>
+    </EditForm>
+}
+
+@code {
+    [Inject] private IUserApiClient UserApiClient { get; set; }
+
+    [Parameter]
+    public EventCallback<Models.TaskListSearch> OnSearch { get; set; }
+
+    private Models.TaskListSearch TaskListSearch = new();
+    private List<UserDto> Assignees;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Assignees = await UserApiClient.GetAllUsers();
+    }
+
+    private async Task SearchForm(EditContext editContext)
+    {
+        await OnSearch.InvokeAsync(TaskListSearch);
+    }
+}
