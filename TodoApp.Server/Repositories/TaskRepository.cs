@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using TodoApp.Models.SeedWork;
 using TodoApp.Server.Data;
 
 namespace TodoApp.Server.Repositories
@@ -30,9 +31,8 @@ namespace TodoApp.Server.Repositories
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<Models.Task>> GetAllTasks(Models.TaskListSearch taskListSearch)
+        public async Task<PagedList<Models.Task>> GetAllTasks(Models.TaskListSearch taskListSearch)
         {
-
             var query = _dbContext.Tasks.Include(x => x.Assignee).AsQueryable();
 
             if (!string.IsNullOrEmpty(taskListSearch.Name))
@@ -44,7 +44,13 @@ namespace TodoApp.Server.Repositories
             if (taskListSearch.Priority.HasValue)
                 query = query.Where(x => x.Priority == taskListSearch.Priority.Value);
 
-            return await query.OrderByDescending(x => x.CreatedAt).ToListAsync();
+            var count = await query.CountAsync();
+            var data =  await query.OrderByDescending(x => x.CreatedAt)
+                .Skip((taskListSearch.PageNumber - 1) * taskListSearch.PageSize)
+                .Take(taskListSearch.PageSize)
+                .ToListAsync();
+
+            return new PagedList<Models.Task>(data, count, taskListSearch.PageNumber, taskListSearch.PageSize);
         }
 
         public async Task<Models.Task?> GetById(Guid id)

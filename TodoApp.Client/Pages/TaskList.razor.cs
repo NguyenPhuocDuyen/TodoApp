@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Components;
 using TodoApp.Client.Components;
+using TodoApp.Client.Pages.Components;
 using TodoApp.Client.Services;
 using TodoApp.Models.Dtos;
+using TodoApp.Models.SeedWork;
 
 namespace TodoApp.Client.Pages
 {
@@ -10,21 +12,23 @@ namespace TodoApp.Client.Pages
         [Inject] private ITaskApiClient TaskApiClient { get; set; }
 
         protected Confirmation Confirmation { get; set; }
+        protected AssignTask AssignTask { get; set; }
 
         private Guid TaskDeleteId { get; set; }
         private List<TaskDto> Tasks;
+        public MetaData MetaData { get; set; }
 
         private Models.TaskListSearch TaskListSearch = new();
 
         protected override async System.Threading.Tasks.Task OnInitializedAsync()
         {
-            Tasks = await TaskApiClient.GetAllTasks(TaskListSearch);
+            await GetTasks();
         }
 
         public async Task TaskSearch(Models.TaskListSearch taskListSearch)
         {
             TaskListSearch = taskListSearch;
-            Tasks = await TaskApiClient.GetAllTasks(TaskListSearch);
+            await GetTasks();
         }
 
         private void OnDeleteTask(Guid deleteId)
@@ -38,8 +42,34 @@ namespace TodoApp.Client.Pages
             if (deleteConfirmed)
             {
                 await TaskApiClient.Delete(TaskDeleteId);
-                Tasks = await TaskApiClient.GetAllTasks(TaskListSearch);
+                await GetTasks();
             }
+        }
+
+        private void OpenAssignPopup(Guid taskId)
+        {
+            AssignTask.Show(taskId);
+        }
+
+        public async Task AssignTaskSuccess(bool result)
+        {
+            if (result)
+            {
+                await GetTasks();
+            }
+        }
+
+        private async Task GetTasks()
+        {
+            var pagingReponse = await TaskApiClient.GetAllTasks(TaskListSearch);
+            Tasks = pagingReponse.Items;
+            MetaData = pagingReponse.MetaData;
+        }
+
+        private async Task SelectedPage(int page)
+        {
+            TaskListSearch.PageNumber = page;
+            await GetTasks();
         }
     }
 }

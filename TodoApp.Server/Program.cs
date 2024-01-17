@@ -10,6 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 // mapper
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 
+// database
 builder.Services.AddTransient<ITaskRepository, TaskRepository>();
 builder.Services.AddTransient<IUserRepository, UserRepository>();
 builder.Services.AddDbContext<TodoAppDbContext>(op => op.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));

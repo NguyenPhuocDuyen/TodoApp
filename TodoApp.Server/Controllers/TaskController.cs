@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 using TodoApp.Models;
 using TodoApp.Models.Dtos;
+using TodoApp.Models.SeedWork;
 using TodoApp.Server.Repositories;
 
 namespace TodoApp.Server.Controllers
@@ -22,7 +24,18 @@ namespace TodoApp.Server.Controllers
         // GET: api/<TaskController>
         [HttpGet]
         public async Task<IActionResult> Get([FromQuery] TaskListSearch taskListSearch)
-            => Ok(_mapper.Map<List<TaskDto>>(await _taskRepository.GetAllTasks(taskListSearch)));
+        {
+            var pagedList = await _taskRepository.GetAllTasks(taskListSearch);
+
+            var taskDtos = _mapper.Map<List<TaskDto>>(pagedList.Items);
+
+            return Ok(
+                    new PagedList<TaskDto>(taskDtos,
+                        pagedList.MetaData.TotalCount,
+                        pagedList.MetaData.CurrentPage,
+                        pagedList.MetaData.PageSize)
+                );
+        }
 
         // GET api/<TaskController>/5
         [HttpGet("{id}")]
@@ -48,7 +61,7 @@ namespace TodoApp.Server.Controllers
                 CreatedAt = DateTime.UtcNow,
             };
             await _taskRepository.Create(task);
-            return CreatedAtAction(nameof(GetById), new { id = task.Id}, task);
+            return CreatedAtAction(nameof(GetById), new { id = task.Id }, task);
         }
 
         // PUT api/<TaskController>/5
@@ -69,6 +82,27 @@ namespace TodoApp.Server.Controllers
             task.Priority = newTask.Priority;
             await _taskRepository.Update(task);
             return NoContent();
+        }
+
+        [HttpPut]
+        [Route("{id}/assign")]
+        public async Task<IActionResult> AssignTask(Guid id, [FromBody] AssignTaskRequest request)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var taskFromDb = await _taskRepository.GetById(id);
+
+            if (taskFromDb == null)
+            {
+                return NotFound($"{id} is not found");
+            }
+
+            taskFromDb.AssigneeId = request.UserId.Value == Guid.Empty ? null : request.UserId.Value;
+
+            await _taskRepository.Update(taskFromDb);
+
+            return Ok(_mapper.Map<TaskDto>(taskFromDb));
         }
 
         // DELETE api/<TaskController>/5

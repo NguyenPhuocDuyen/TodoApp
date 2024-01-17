@@ -1,5 +1,7 @@
 ﻿@page "/TaskList"
 @using TodoApp.Client.Components
+@using TodoApp.Client.Pages.Components
+
 @using static TodoApp.Models.SD;
 @inject IConfiguration Configuration
 
@@ -31,7 +33,7 @@ else
                     <tr>
                         <td>@item.Name</td>
                         <td>@item.Priority</td>
-                        <td>@item.AssigneeName</td>
+                        <td><button @onclick="()=>OpenAssignPopup(item.Id)">@item.AssigneeName</button></td>
                         <td>@item.CreatedAt.ToString(Configuration["DateTimeFormat"])</td>
                         <td>@item.Status</td>
                         <td>
@@ -42,6 +44,9 @@ else
                     </tr>
                 }
             </tbody>
+            <tfoot>
+                <Pagination MetaData="MetaData" Spread="2" SelectedPage="SelectedPage" />
+            </tfoot>
         </table>
     </div>
     <Confirmation 
@@ -49,4 +54,6 @@ else
         ConfirmationMessage="@($"Are you sure to delete")" 
         @ref="Confirmation"
         ConfirmationChanged="OnConfirmDeleteTask" />
+
+    <AssignTask @ref="AssignTask" CloseEventCallbak="AssignTaskSuccess" />
 }

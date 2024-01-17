@@ -7,15 +7,12 @@ namespace TodoApp.Server.Data
 {
     public class TodoAppDbContext : IdentityDbContext<User, Role, Guid>
     {
-        private readonly IConfiguration _configuration;
-
         public TodoAppDbContext(DbContextOptions<TodoAppDbContext> options) : base(options) { }
 
         public DbSet<Models.Task> Tasks { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-
             base.OnModelCreating(builder);
 
             foreach (var entityType in builder.Model.GetEntityTypes())

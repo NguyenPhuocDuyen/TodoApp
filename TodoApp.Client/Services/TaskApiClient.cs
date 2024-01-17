@@ -1,5 +1,7 @@
-﻿using System.Net.Http.Json;
+﻿using Microsoft.AspNetCore.WebUtilities;
+using System.Net.Http.Json;
 using TodoApp.Models.Dtos;
+using TodoApp.Models.SeedWork;
 
 namespace TodoApp.Client.Services
 {
@@ -10,6 +12,12 @@ namespace TodoApp.Client.Services
         public TaskApiClient(HttpClient httpClient)
         {
             _httpClient = httpClient;
+        }
+
+        public async Task<bool> AssignTask(Guid id, AssignTaskRequest task)
+        {
+            var result = await _httpClient.PutAsJsonAsync($"/api/Task/{id}/assign", task);
+            return result.IsSuccessStatusCode;
         }
 
         public async Task<bool> Create(TaskCreateRequest task)
@@ -24,10 +32,23 @@ namespace TodoApp.Client.Services
             return result.IsSuccessStatusCode;
         }
 
-        public Task<List<TaskDto>?> GetAllTasks(Models.TaskListSearch taskListSearch)
+        public Task<PagedList<TaskDto>?> GetAllTasks(Models.TaskListSearch taskListSearch)
         {
-            var url = $"/api/Task?name={taskListSearch.Name}&assigneeId={taskListSearch.AssigneeId}&priority={taskListSearch.Priority}";
-            var result = _httpClient.GetFromJsonAsync<List<TaskDto>>(url);
+            //var url = $"/api/Task?name={taskListSearch.Name}&assigneeId={taskListSearch.AssigneeId}&priority={taskListSearch.Priority}";
+            var queryStringParam = new Dictionary<string, string>
+            {
+                ["pageNumber"] = taskListSearch.PageNumber.ToString()
+            };
+            if (!string.IsNullOrEmpty(taskListSearch.Name))
+                queryStringParam.Add("name", taskListSearch.Name);
+            if (taskListSearch.AssigneeId.HasValue)
+                queryStringParam.Add("assigneeId", taskListSearch.AssigneeId.ToString());
+            if (taskListSearch.Priority.HasValue)
+                queryStringParam.Add("priority", taskListSearch.Priority.ToString());
+
+            string url = QueryHelpers.AddQueryString("/api/task", queryStringParam);
+
+            var result = _httpClient.GetFromJsonAsync<PagedList<TaskDto>>(url);
             return result;
         }
 

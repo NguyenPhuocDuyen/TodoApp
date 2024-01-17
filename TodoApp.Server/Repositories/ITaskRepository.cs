@@ -1,8 +1,10 @@
-﻿namespace TodoApp.Server.Repositories
+﻿using TodoApp.Models.SeedWork;
+
+namespace TodoApp.Server.Repositories
 {
     public interface ITaskRepository
     {
-        Task<IEnumerable<Models.Task>> GetAllTasks(Models.TaskListSearch taskListSearch);
+        Task<PagedList<Models.Task>> GetAllTasks(Models.TaskListSearch taskListSearch);
         Task<Models.Task?> GetById(Guid id);
         Task Create(Models.Task task);
         Task Update(Models.Task task);
