@@ -1,4 +1,6 @@
+using Blazored.LocalStorage;
 using Blazored.Toast;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using TodoApp.Client;
@@ -10,8 +12,13 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddTransient(sp => new HttpClient { BaseAddress = new Uri(builder.Configuration["BackendApiUrl"])});
 
-builder.Services.AddScoped<ITaskApiClient, TaskApiClient>();
-builder.Services.AddScoped<IUserApiClient, UserApiClient>();
 builder.Services.AddBlazoredToast();
+builder.Services.AddTransient<ITaskApiClient, TaskApiClient>();
+builder.Services.AddTransient<IUserApiClient, UserApiClient>();
+
+builder.Services.AddBlazoredLocalStorage();
+builder.Services.AddAuthorizationCore();
+builder.Services.AddScoped<AuthenticationStateProvider, ApiAuthenticationStateProvider>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 await builder.Build().RunAsync();
